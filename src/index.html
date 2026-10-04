@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' file: data:; style-src 'self'; script-src 'self';"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>图片查看器</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="app" class="app">
+      <aside id="sidebar" class="sidebar" aria-label="图片浏览器">
+        <header class="sidebar-header">
+          <div class="brand">
+            <span class="brand-mark" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <rect x="3" y="4" width="18" height="16" rx="3" />
+                <circle cx="9" cy="9" r="2" />
+                <path d="m5 17 4.5-4.5 3.2 3.2 2.1-2.1L19 17" />
+              </svg>
+            </span>
+            <div>
+              <strong>图片查看器</strong>
+              <span>浏览当前目录</span>
+            </div>
+          </div>
+          <button
+            id="collapseSidebarButton"
+            class="icon-button"
+            type="button"
+            aria-label="收起侧边栏"
+            title="收起侧边栏"
+          >
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="m14.5 6-6 6 6 6" />
+            </svg>
+          </button>
+        </header>
+
+        <div class="segmented-control" role="tablist" aria-label="侧边栏视图">
+          <button
+            id="directoryTab"
+            class="segment-button is-active"
+            type="button"
+            role="tab"
+            aria-selected="true"
+            aria-controls="directoryPanel"
+            data-view="directory"
+          >
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M3.5 7.5h6l2-2h9v13h-17z" />
+            </svg>
+            目录
+          </button>
+          <button
+            id="imagesTab"
+            class="segment-button"
+            type="button"
+            role="tab"
+            aria-selected="false"
+            aria-controls="imagesPanel"
+            data-view="images"
+          >
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="3.5" y="4" width="17" height="16" rx="2.5" />
+              <circle cx="9" cy="9" r="1.7" />
+              <path d="m5.5 17 4.2-4.2 3 3 2-2 3.8 3.2" />
+            </svg>
+            当前目录
+          </button>
+        </div>
+
+        <div class="sidebar-body">
+          <section id="directoryPanel" class="sidebar-panel is-active" role="tabpanel">
+            <div class="panel-toolbar">
+              <div class="path-heading">
+                <span class="toolbar-label">当前目录</span>
+                <strong id="currentDirectoryName">尚未打开目录</strong>
+              </div>
+              <button
+                id="refreshDirectoryButton"
+                class="icon-button subtle"
+                type="button"
+                aria-label="刷新目录"
+                title="刷新目录"
+                disabled
+              >
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M19 8a7 7 0 1 0 .5 7.5" />
+                  <path d="M19 4v4h-4" />
+                </svg>
+              </button>
+            </div>
+            <div id="directoryTree" class="directory-tree" role="tree" aria-label="目录树">
+              <div class="sidebar-empty">
+                <span class="empty-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M3.5 7.5h6l2-2h9v13h-17z" />
+                  </svg>
+                </span>
+                <p>打开图片或目录后，可在这里浏览子目录。</p>
+              </div>
+            </div>
+          </section>
+
+          <section id="imagesPanel" class="sidebar-panel" role="tabpanel" hidden>
+            <div class="panel-toolbar">
+              <div class="path-heading">
+                <span class="toolbar-label">当前目录图片</span>
+                <strong id="imageListCount">0 张</strong>
+              </div>
+              <button
+                id="refreshImagesButton"
+                class="icon-button subtle"
+                type="button"
+                aria-label="刷新图片列表"
+                title="刷新图片列表"
+                disabled
+              >
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M19 8a7 7 0 1 0 .5 7.5" />
+                  <path d="M19 4v4h-4" />
+                </svg>
+              </button>
+            </div>
+            <div
+              id="imageList"
+              class="image-list"
+              role="listbox"
+              aria-label="当前目录图片列表"
+              tabindex="0"
+            >
+              <div class="sidebar-empty">
+                <span class="empty-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <rect x="3.5" y="4" width="17" height="16" rx="2.5" />
+                    <circle cx="9" cy="9" r="1.7" />
+                    <path d="m5.5 17 4.2-4.2 3 3 2-2 3.8 3.2" />
+                  </svg>
+                </span>
+                <p>当前目录暂无图片。</p>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div
+          id="sidebarResizer"
+          class="sidebar-resizer"
+          role="separator"
+          aria-label="调整侧边栏宽度"
+          aria-orientation="vertical"
+          tabindex="0"
+          title="拖动调整宽度，双击恢复默认"
+        ></div>
+      </aside>
+
+      <button
+        id="revealSidebarButton"
+        class="reveal-sidebar-button"
+        type="button"
+        aria-label="展开侧边栏"
+        title="展开侧边栏"
+      >
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 5.5h16v13H4z" />
+          <path d="M9 5.5v13" />
+          <path d="m14 9 3 3-3 3" />
+        </svg>
+      </button>
+
+      <main class="main-content">
+        <section class="viewer-shell" aria-label="图片展示区">
+          <div id="stageViewport" class="stage-viewport">
+            <div id="stageContent" class="stage-content is-hidden">
+              <div id="zoomLayer" class="zoom-layer">
+                <img id="mainImage" draggable="false" alt="" />
+              </div>
+            </div>
+
+            <div id="emptyState" class="empty-state">
+              <div class="empty-state-card">
+                <span class="empty-state-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <rect x="3" y="4" width="18" height="16" rx="3" />
+                    <circle cx="9" cy="9" r="2" />
+                    <path d="m5 17 4.5-4.5 3.2 3.2 2.1-2.1L19 17" />
+                  </svg>
+                </span>
+                <h1>打开一张图片开始浏览</h1>
+                <p>可直接打开图片或目录，也可以用鼠标滚轮、触控板和方向键切换图片。</p>
+                <div class="empty-actions">
+                  <button id="openFileButton" class="primary-button" type="button">打开图片</button>
+                  <button id="openDirectoryButton" class="secondary-button" type="button">
+                    打开目录
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <button id="previousZone" class="navigation-zone previous" type="button" aria-label="上一张图片">
+              <span aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="m15 5-7 7 7 7" />
+                </svg>
+              </span>
+            </button>
+            <button id="nextZone" class="navigation-zone next" type="button" aria-label="下一张图片">
+              <span aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="m9 5 7 7-7 7" />
+                </svg>
+              </span>
+            </button>
+          </div>
+
+          <div class="viewer-toolbar">
+            <div class="image-details">
+              <strong id="imageName">未选择图片</strong>
+              <span id="imagePosition">—</span>
+            </div>
+            <button id="fitModeButton" class="fit-mode-button" type="button" title="切换图片显示方式">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M8 4H4v4M16 4h4v4M20 16v4h-4M4 16v4h4" />
+              </svg>
+              <span>适应屏幕</span>
+            </button>
+          </div>
+        </section>
+      </main>
+
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    </div>
+
+    <script src="./renderer.js"></script>
+  </body>
+</html>

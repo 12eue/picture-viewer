@@ -1,0 +1,73 @@
+{
+  "name": "picture-viewer",
+  "productName": "图片查看器",
+  "version": "1.0.2",
+  "description": "A focused Electron image viewer with directory browsing and trackpad navigation.",
+  "main": "main.js",
+  "config": {
+    "electron_mirror": "https://npmmirror.com/mirrors/electron/"
+  },
+  "scripts": {
+    "start": "node scripts/start.js",
+    "dev": "node scripts/start.js",
+    "check": "node --check main.js && node --check preload.js && node --check scripts/start.js && node --check src/renderer.js",
+    "build": "electron-builder",
+    "build:mac": "electron-builder --mac dmg",
+    "build:mac:x64": "electron-builder --mac dmg --x64",
+    "build:mac:arm64": "electron-builder --mac dmg --arm64"
+  },
+  "build": {
+    "appId": "com.xiaojianen.pictureviewer",
+    "productName": "图片查看器",
+    "artifactName": "${productName}-${version}-${arch}.${ext}",
+    "asar": true,
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**/*",
+      "package.json"
+    ],
+    "mac": {
+      "icon": "build/icon.icns",
+      "category": "public.app-category.photography",
+      "target": [
+        "dmg"
+      ],
+      "identity": null
+    },
+    "dmg": {
+      "title": "${productName} ${version}",
+      "backgroundColor": "#0d0f12",
+      "window": {
+        "width": 600,
+        "height": 400
+      },
+      "contents": [
+        {
+          "x": 170,
+          "y": 200,
+          "type": "file"
+        },
+        {
+          "x": 430,
+          "y": 200,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    }
+  },
+  "keywords": [
+    "electron",
+    "image-viewer"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^38.0.0",
+    "electron-builder": "^26.15.3"
+  }
+}
