@@ -34,9 +34,12 @@ npm start
 - 左下角侧边栏的收起按钮：显示/收起目录与图片列表，并记住上次状态
 - 拖动侧边栏右侧边缘：调整侧边栏宽度；双击恢复默认宽度
 
-## 构建 macOS 安装包
+## 构建安装包
 
 ```bash
+# Windows x64 NSIS 安装包
+npm run build:win
+
 # 按当前 Mac 架构构建 DMG
 npm run build:mac
 
@@ -50,7 +53,27 @@ npm run build:mac:arm64
 构建产物位于 `dist/`，例如：
 
 ```text
+dist/图片查看器-1.0.2-x64.exe
 dist/图片查看器-1.0.2-x64.dmg
+dist/图片查看器-1.0.2-arm64.dmg
 ```
 
-当前配置会跳过代码签名，适合本地安装和测试。正式分发时需要配置 Apple Developer 证书并完成公证。
+## 使用 Git tag 自动构建并发布
+
+推送到 GitHub 的 `v*` 标签会自动触发 `.github/workflows/release.yml`，并行构建以下安装包，并在全部成功后创建一个 GitHub Release：
+
+- Windows x64：NSIS `.exe` 安装包
+- macOS Intel：`.dmg`
+- macOS Apple Silicon：`.dmg`
+
+```bash
+git add .
+git commit -m "Release v1.0.3"
+git tag v1.0.3
+git push origin main
+git push origin v1.0.3
+```
+
+标签版本会自动覆盖 CI 构建时使用的 `package.json` 版本，因此标签名需要符合 `vX.Y.Z` 或 `vX.Y.Z-预发布标识` 格式，例如 `v1.0.3`、`v1.1.0-beta.1`。构建完成后，安装包会出现在仓库的 Releases 页面。
+
+当前配置没有配置代码签名，适合测试和内部使用。正式分发时，Windows 需要代码签名证书，macOS 需要 Apple Developer 证书并完成公证，否则系统可能显示安全警告。

@@ -14,7 +14,8 @@
     "build": "electron-builder",
     "build:mac": "electron-builder --mac dmg",
     "build:mac:x64": "electron-builder --mac dmg --x64",
-    "build:mac:arm64": "electron-builder --mac dmg --arm64"
+    "build:mac:arm64": "electron-builder --mac dmg --arm64",
+    "build:win": "electron-builder --win nsis --x64"
   },
   "build": {
     "appId": "com.xiaojianen.pictureviewer",
@@ -59,6 +60,18 @@
           "path": "/Applications"
         }
       ]
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
     }
   },
   "keywords": [
